@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">Lista de Alunos</h2>
+  
+    <!-- Botão de Novo Aluno -->
+    <div class="d-flex justify-content-end mb-3">
+      <a href="{{ url_for('cadastrar_aluno') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Cadastrar Novo Aluno
+      </a>
+    </div>
+  
+    <div class="card shadow p-4 bg-light">
+      <table class="table table-hover align-middle">
+        <thead class="table-primary">
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for aluno in alunos %}
+          <tr>
+            <td>{{ aluno[0] }}</td>
+            <td>{{ aluno[1] }}</td>
+            <td>{{ aluno[5] }}</td>
+            <td>
+              {% if aluno[6] == 'matriculado' %}
+                <span class="badge bg-success">Matriculado</span>
+              {% elif aluno[6] == 'pagamento atrasado' %}
+                <span class="badge bg-danger">Atrasado</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ aluno[6] }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('dados_aluno', id=aluno[0]) }}" class="btn btn-sm btn-outline-primary">Gerenciar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  
+  </div>
+
+  {% endblock %}  

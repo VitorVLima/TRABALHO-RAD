@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Atualizar Dados Pessoais</h2>
+
+    <div class="card shadow p-4 bg-light">
+        <form class="row g-3" action="{{ url_for('atualizar_dados_aluno', id=aluno[0]) }}" method="POST">
+            <div class="col-md-6">
+                <label for="nome" class="form-label">Nome Completo</label>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ aluno[1] }}" required>
+            </div>
+            <div class="col-md-3">
+                <label for="telefone" class="form-label">Telefone</label>
+                <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(99) 99999-9999" value="{{ aluno[5] }}" required>
+            </div>
+            <div class="col-md-12">
+                <label for="endereco" class="form-label">Endereço</label>
+                <input type="text" class="form-control" id="endereco" name="endereco" value="{{ aluno[2] }}" required>
+            </div>
+            <div class="col-md-3">
+                <label for="cidade" class="form-label">Cidade</label>
+                <input type="text" class="form-control" id="cidade" name="cidade" value="{{ aluno[3] }}" required>
+            </div>
+            <div class="col-md-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select id="estado" name="estado" class="form-select" required>
+                    <option value="" disabled>Selecione...</option>
+                    {% for uf, nome in [
+                        ('AC', 'Acre'), ('AL', 'Alagoas'), ('AP', 'Amapá'), ('AM', 'Amazonas'),
+                        ('BA', 'Bahia'), ('CE', 'Ceará'), ('DF', 'Distrito Federal'), ('ES', 'Espírito Santo'),
+                        ('GO', 'Goiás'), ('MA', 'Maranhão'), ('MT', 'Mato Grosso'), ('MS', 'Mato Grosso do Sul'),
+                        ('MG', 'Minas Gerais'), ('PA', 'Pará'), ('PB', 'Paraíba'), ('PR', 'Paraná'),
+                        ('PE', 'Pernambuco'), ('PI', 'Piauí'), ('RJ', 'Rio de Janeiro'), ('RN', 'Rio Grande do Norte'),
+                        ('RS', 'Rio Grande do Sul'), ('RO', 'Rondônia'), ('RR', 'Roraima'), ('SC', 'Santa Catarina'),
+                        ('SP', 'São Paulo'), ('SE', 'Sergipe'), ('TO', 'Tocantins')
+                    ] %}
+                        <option value="{{ uf }}" {% if aluno[4] == uf %}selected{% endif %}>{{ nome }} ({{ uf }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary shadow">
+                    Atualizar Dados
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

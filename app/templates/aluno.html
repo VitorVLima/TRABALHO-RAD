@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Dados do Aluno</h2>
+
+    <div class="card shadow p-4 mb-4 bg-light">
+        <h4 class="card-title mb-3">{{ aluno[1] }}</h4>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p><strong>ID:</strong> {{ aluno[0] }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Telefone:</strong> {{ aluno[5] }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p><strong>Cidade:</strong> {{ aluno[3] }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Estado:</strong> {{ aluno[4] }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <p><strong>Endereço:</strong> {{ aluno[2] }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p><strong>Status:</strong> {{ aluno[6] }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Data de Matrícula:</strong> {{ aluno[7] or '---' }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p><strong>Data de Vencimento:</strong> {{ aluno[8] or '---' }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Data de Desligamento:</strong> {{ aluno[9] or '---' }}</p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('atualizar_dados_aluno', id=aluno[0]) }}" class="btn btn-primary">Atualizar Dados</a>
+        </div>
+    </div>
+
+    <!-- Formulário de Novo Pagamento -->
+    <div class="card shadow p-4 mb-4">
+        <h4 class="mb-3">Realizar Novo Pagamento</h4>
+
+        <form action="{{ url_for('novo_pagamento', id=aluno[0]) }}" method="POST">
+            <div class="row g-3 align-items-center">
+
+                <!-- Campo Valor (travado) -->
+                <div class="col-md-4">
+                    <label for="valor" class="form-label"><strong>Valor (R$)</strong></label>
+                    <input type="number" name="valor" id="valor" class="form-control" value="100.00" readonly>
+                </div>
+
+                <!-- Campo Tipo -->
+                <div class="col-md-4">
+                    <label for="tipo" class="form-label"><strong>Tipo de Pagamento</strong></label>
+                    <select name="tipo" id="tipo" class="form-select" required>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Cartão">Cartão</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end justify-content-end">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#meuModal">Confirmar Pagamento</button>
+                </div>
+                
+            </div>
+
+            <div class="modal fade" id="meuModal" tabindex="-1" aria-labelledby="meuModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="meuModalLabel">Confirmar Pagamento</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Deseja continuar com o pagamento?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+        </form>
+    </div>
+
+    
+
+    <!-- Lista de Pagamentos -->
+    <div class="card shadow p-4 bg-white">
+        <h4 class="mb-3">Histórico de Pagamentos</h4>
+
+        {% if pagamentos %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Valor (R$)</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pagamentos %}
+                    <tr>
+                        <td>{{ p[0] }}</td>
+                        <td>{{ p[1] }}</td>
+                        <td>{{ "%.2f"|format(p[3]) }}</td>
+                        <td>{{ p[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Sem pagamentos registrados ainda.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+
+
