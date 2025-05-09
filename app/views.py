@@ -1,5 +1,5 @@
 from app import app
-from app.modelo import AppBd
+from app.models import AppBd
 from flask import render_template, url_for, request, redirect,flash
 from datetime import datetime, timedelta
 
@@ -16,30 +16,20 @@ def atualizar_status_alunos():
         data_vencimento = aluno[8]
         data_desligamento = aluno[9]
 
-        pagamentos = db.listar_pagamentos(id_aluno)
+       
 
-        if pagamentos == None:
-            db.atualizar_status_aluno(
-                id_aluno=id,
-                status="cadastrado",
-                data_matricula=None,
-                data_vencimento=None,
-                data_desligamento=None)
-        
-        else:
+        if data_vencimento:
+            vencimento = datetime.strptime(data_vencimento, "%Y-%m-%d").date()
+            nova_data_desligamento = vencimento + timedelta(days=1)
 
-            if data_vencimento:
-                vencimento = datetime.strptime(data_vencimento, "%Y-%m-%d").date()
-                nova_data_desligamento = vencimento + timedelta(days=1)
-
-                if hoje > vencimento and status != "pagamento atrasado":
-                    db.atualizar_status_aluno(
-                        id_aluno=id_aluno,
-                        novo_status="pagamento atrasado",
-                        data_matricula = None,
-                        data_vencimento = None,
-                        data_desligamento= nova_data_desligamento.strftime("%Y-%m-%d")
-                    )
+            if hoje > vencimento and status != "pagamento atrasado":
+                db.atualizar_status_aluno(
+                    id_aluno=id_aluno,
+                    novo_status="pagamento atrasado",
+                    data_matricula = None,
+                    data_vencimento = None,
+                    data_desligamento= nova_data_desligamento.strftime("%Y-%m-%d")
+                )
 
 
 
@@ -132,6 +122,31 @@ def atualizar_dados_aluno(id):
     
     return render_template('atualizaraluno.html', aluno = aluno)
 
+@app.route("/excluir/<int:id>", methods=["POST"])
+def excluir_aluno(id):
+    alunos = db.listar_alunos()
+
+    for a in alunos:
+        if a[0] == id:
+            aluno = a
+    if request.method == "POST":
+        if aluno[6] == "matriculado":
+            print("Não é possível excluir aluno matriculado!")
+            return redirect(url_for("dados_aluno", id=id))
+        
+        pagamentos = []
+        
+        pagamentos = db.listar_pagamentos(id)
+        
+
+        if pagamentos:
+            db.deletar_pagamento(id)
+            print("pagamentos do aluno deletado com sucesso!")
+        db.deletar_aluno(id)
+
+        return redirect(url_for("homepage"))
+
+
 
 
 @app.route("/pagamento/<int:id>", methods=["POST"])
@@ -164,10 +179,10 @@ def novo_pagamento(id):
         data_matricula = data_pagamento
 
     if not data_vencimento_atual:
-        data_vencimento_novo = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+        data_vencimento_novo = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
     else:
         vencimento = datetime.strptime(data_vencimento_atual, "%Y-%m-%d")
-        data_vencimento_novo = (vencimento + timedelta(days=1)).strftime("%Y-%m-%d")
+        data_vencimento_novo = (vencimento + timedelta(days=30)).strftime("%Y-%m-%d")
 
     db.atualizar_status_aluno(
             id_aluno=id,

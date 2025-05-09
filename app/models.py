@@ -110,7 +110,7 @@ class AppBd():
         delete_query = """ DELETE FROM alunos WHERE id = ?"""
         try:
             cursor = self.connect.cursor()
-            cursor.execute(delete_query, id_aluno)
+            cursor.execute(delete_query, (id_aluno,))
             self.connect.commit()
             print("Aluno deletado com sucesso")
         except sqlite3.Error as erro:
@@ -186,12 +186,12 @@ class AppBd():
             cursor.close()
             self.fechar_conexao()
     
-    def deletar_pagamento(self, id_pagamento):
+    def deletar_pagamento(self, id_aluno):
         delete_query = "DELETE FROM pagamentos WHERE id=?"
         self.abrir_conexao()
         try:
             cursor = self.connect.cursor()
-            cursor.execute(delete_query, (id_pagamento,))
+            cursor.execute(delete_query, (id_aluno,))
             self.connect.commit()
             print("Pagamento deletado com sucesso!")
         except sqlite3.Error as erro:

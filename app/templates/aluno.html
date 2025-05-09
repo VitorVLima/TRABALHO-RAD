@@ -53,7 +53,31 @@
 
         <div class="mt-4">
             <a href="{{ url_for('atualizar_dados_aluno', id=aluno[0]) }}" class="btn btn-primary">Atualizar Dados</a>
+            <a href="" class="btn btn-danger" data-bs-target="#deletar" data-bs-toggle="modal">
+                Excluir Aluno
+            </a>
+            <div class="modal" tabindex="-1" id="deletar">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Excluir Aluno</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Deseja excluir aluno?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <form action="{{url_for('excluir_aluno', id=aluno[0])}}" method="post">
+                      <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>
+
+        
     </div>
 
     <!-- Formulário de Novo Pagamento -->
